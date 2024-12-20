@@ -11,6 +11,9 @@ import threading
 NUM_PIXELS = 8
 pixels = neopixel.NeoPixel(board.D18, NUM_PIXELS, brightness=1.0/32, auto_write=False)
 
+red_button = 5
+green_button = 6 
+
 refresh_counter = 0
 refresh_time = 0.5
 
@@ -73,12 +76,34 @@ def set_diodes(min_range, max_range, min_comfort, max_comfort, current):
 
 
 def refresh_temperature():
+    global temp_min
+    global temp_max
+
+    global comfort_temp_min
+    global comfort_temp_max
+
     temperature = get_temperature()
+    set_diodes(temp_min, temp_max, comfort_temp_min, comfort_temp_max, temperature)
 
 def refresh_humidity():
+    global humidity_min 
+    global humidity_max 
+
+    global comfort_humidity_min 
+    global comfort_humidity_max
+
     humidity = get_humidity()
+    set_diodes(humidity_min, humidity_max, comfort_humidity_min, comfort_humidity_max, humidity)
+    
 
-
+def button_callback(channel):
+    global reading_temperature, start_time_change
+    if channel == red_button:
+        reading_temperature = True
+        start_time_change = time.time()
+    elif channel == green_button:
+        reading_temperature = False
+        start_time_change = time.time()
 
 
 
